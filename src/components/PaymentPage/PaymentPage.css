@@ -1,0 +1,61 @@
+.paymentPage {
+    display: flex;
+}
+
+.paymentInfo {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.paymentForm {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+
+.paymentMethod {
+    text-align: left;
+}
+
+.paymentMethod div {
+    margin-top: 1rem;
+}
+
+.paymentMethodForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.paymentMethodForm input {
+    margin-left: 0;
+    accent-color: red;
+}
+
+.paymentMethodForm input[type="radio"]:checked+label { color: red; }
+
+.summaryPayment {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    margin-right: 1rem;
+}
+
+.productPayment {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    width: 30rem;
+}
+
+.productPayment img {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 8px;
+}
+
+.totalsPayment {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

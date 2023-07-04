@@ -1,0 +1,58 @@
+.shippingPage {
+    display: flex;
+}
+
+.shippingInfo {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.shippingForm {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+
+.shippingMethod {
+    text-align: left;
+}
+
+.shippingMethod div {
+    margin-top: 1rem;
+}
+
+.shippingMethodForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.shippingMethodForm input {
+    margin-left: 0;
+    accent-color: red;
+}
+
+.shippingMethodForm input[type="radio"]:checked+label { color: red; }
+
+.shippingLine {
+    display: grid;
+    grid-template-columns: 8rem 25rem 1fr;
+    grid-template-areas:
+        "shippingRadio shippingText";
+}
+
+.shippingRadio { grid-area: shippingRadio; }
+.shippingText { grid-area: shippingText; }
+
+.summaryShipping {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    margin-right: 1rem;
+}
+
+.totalsShipping {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

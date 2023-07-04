@@ -1,0 +1,105 @@
+.cartPage {
+    display: flex;
+    padding-right: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.cart table {
+    border-spacing: 1rem;
+    border-collapse: collapse;
+}
+
+.cartInfo {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+td, th {
+    border-bottom: 1px solid grey;
+    padding: 0.5rem;
+}
+
+.headerRow th:nth-child(1) {
+    font-size: 1.5rem;
+}
+
+.productCart {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    width: 30rem;
+}
+
+.productCart img {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 8px;
+}
+
+.productDescCart {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.productDescCart h2,
+.productDescCart p {
+    margin: 0;
+}
+
+.productDescCart p {
+    opacity: 50%;
+}
+
+.buttonX {
+    width: 1rem;
+}
+
+.summaryCart {
+    display: flex;
+    flex-direction: column;
+}
+
+.summaryCartBody {
+    padding-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.promo {
+    display: flex;
+    gap: 0.25rem;
+    align-self: center;
+}
+
+.totalLine {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonCheckout {
+    width: 13rem;
+    border: 0;
+    color: white;
+    padding: 1rem;
+    font-size: 20px;
+    border-radius: 3px;
+    user-select: none;
+    background-color: red;
+    opacity: 100%;
+    pointer-events: initial;
+    align-self: center;
+}
+
+.disabled {
+    opacity: 50%;
+    color: lightgrey;
+    pointer-events: none;
+}

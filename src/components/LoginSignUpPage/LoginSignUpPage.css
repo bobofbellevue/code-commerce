@@ -1,0 +1,111 @@
+.loginPage {
+  display: flex;
+  flex-direction: column;
+  width: 30rem;
+  align-items: flex-start;
+}
+
+.cancelX {
+  margin-top: 0;
+  margin-left: auto;
+  color: darkgrey;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.modeRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modeRow input {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: red;
+  margin-left: 0;
+}
+
+.modeRow label {
+  padding-right: 1rem;
+}
+
+.modeRow input[type="radio"]:checked+label { color: red; }
+
+.instructionText {
+  text-align: left;
+  font-weight: 500;
+}
+
+.buttonSave,
+.buttonFacebook {
+  width: 26rem;
+  border: 0;
+  color: white;
+  padding: 1rem;
+  font-size: 20px;
+  border-radius: 3px;
+  user-select: none;
+}
+
+.buttonSave {
+  background-color: red;
+}
+
+.buttonFacebook {
+  background-color: navy;
+}
+
+.strikeWrapper {
+  width: 28rem;
+  display: flex;
+  align-items: center;
+}
+
+.strikeText {
+  flex-wrap: wrap;
+  margin: 0 10px 0 10px;
+  text-align: center;
+}
+
+.strikeLine {
+  flex: 1;
+  height: 1px;
+  background-color: grey;
+}
+
+.centerMe {
+  margin: auto;
+  margin-top: 1rem;
+}
+
+.centerMe a:link {
+  color: inherit;
+}
+
+.loginFooter {
+  display: flex;
+  gap: 1rem;
+}
+
+.passwordContainer span {
+  position: relative;
+}
+
+.passwordInput {
+  padding-right: 1.5rem;
+  width: 25.5rem;
+}
+
+.passwordInput:focus {
+  border-color: #4dabf7;
+  outline: none;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.0125), 0 0 8px rgba(34, 139, 230, 0.5);
+}
+
+.passwordContainer .eye {
+  position: absolute;
+  width: 2rem;
+  transform: translateX(-3rem);
+  margin-top: 0;
+}
