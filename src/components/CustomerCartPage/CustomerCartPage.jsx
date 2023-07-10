@@ -34,8 +34,7 @@ class CustomerCartPage extends React.Component {
       1
     );
     const subtotal = this.calcSubtotal();
-    this.setState({ subtotal: subtotal });
-    this.setState({ total: this.calcTotal(subtotal) });
+    this.setState({ subtotal: subtotal, total: this.calcTotal(subtotal) });
     this.onClickDiscount();
   }
 
@@ -61,8 +60,7 @@ class CustomerCartPage extends React.Component {
     );
     this.props.products[index].licenses = e.target.value;
     const subtotal = this.calcSubtotal();
-    this.setState({ subtotal: subtotal });
-    this.setState({ total: this.calcTotal(subtotal) });
+    this.setState({ subtotal: subtotal, total: this.calcTotal(subtotal) });
     this.onClickDiscount();
   }
 
@@ -119,23 +117,24 @@ class CustomerCartPage extends React.Component {
   }
 
   onClickDiscount(e) {
-    const discountCode = document.getElementById("promo").value;
     let discountPct = 0;
-    if (discountCode === "SAVE10") {
+    if (this.state.discountCode === "SAVE10") {
       discountPct = 10;
-    } else if (discountCode === "SAVE5") {
+    } else if (this.state.discountCode === "SAVE5") {
       discountPct = 5;
     }
-    this.props.updateCartInfo(discountCode, discountPct);
-    this.setState({ discountCode: discountCode });
-    this.setState({ discountPct: discountPct });
+    this.props.updateCartInfo(this.state.discountCode, discountPct);
     const subtotal = this.calcSubtotal();
-    this.setState({ discount: (subtotal * discountPct) / 100 });
     const total =
       subtotal -
       (subtotal * this.props.cartInfo.discountPct) / 100 +
       (this.props.shippingInfo.express || this.state.subtotal < 40 ? 5 : 0);
-    this.setState({ total: total });
+    this.setState({
+      discountCode: this.state.discountCode,
+      discountPct: discountPct,
+      discount: (subtotal * discountPct) / 100,
+      total: total,
+    });
   }
 
   onChangePromo(e) {
@@ -161,11 +160,11 @@ class CustomerCartPage extends React.Component {
             <table>
               <thead>
                 <tr className="headerRow">
-                  <th></th>
-                  <th>PRODUCT</th>
-                  <th>PRICE</th>
-                  <th>LICENSES</th>
-                  <th>TOTAL</th>
+                  {["", "PRODUCT", "PRICE", "LICENSES", "TOTAL"].map(
+                    (title) => (
+                      <th>{title}</th>
+                    )
+                  )}
                 </tr>
               </thead>
               <tbody>

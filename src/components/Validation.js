@@ -37,7 +37,15 @@ export function renderLabel(
   );
 }
 
-export function renderInputField(type, name, value, onChange, placeholder, maxLength, onInput) {
+export function renderInputField(
+  type,
+  name,
+  value,
+  onChange,
+  placeholder,
+  maxLength,
+  onInput
+) {
   return (
     <span className="baseFieldContainer">
       <input
@@ -55,13 +63,11 @@ export function renderInputField(type, name, value, onChange, placeholder, maxLe
   );
 }
 
-export function ValidateFieldNotEmpty(fieldName) {
-  const value = document.getElementById(fieldName).value;
+export function ValidateFieldNotEmpty(value) {
   return value.length !== 0;
 }
 
-export function ValidateName(fieldName) {
-  const name = document.getElementById(fieldName).value;
+export function ValidateName(name) {
   if (name === undefined) {
     return false;
   }
@@ -71,13 +77,18 @@ export function ValidateName(fieldName) {
   return false;
 }
 
-export function ValidateZipCode(fieldName) {
-  const zipCode = document.getElementById(fieldName).value;
+export function ValidateZipCode(zipCode) {
   if (zipCode === undefined) {
     return false;
   }
-  if (zipCode.length === 0 || /^\d+$/.test(zipCode)) {
+  if (zipCode.length === 0 || (zipCode.length === 5 && /^\d+$/.test(zipCode))) {
     return true;
   }
   return false;
+}
+
+export function onInputNumber(e) {
+  e.target.value = e.target.value
+    .replace(/[^0-9.]/g, "")
+    .replace(/(\..*)\./g, "$1");
 }

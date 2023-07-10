@@ -1,7 +1,14 @@
 import React from "react";
 import "./LoginSignUpPage.css";
 import "../Common.css";
-import { renderLabel, renderInputField, ValidateFieldNotEmpty, ValidateName, ValidateZipCode } from "../Validation.js";
+import {
+  renderLabel,
+  renderInputField,
+  ValidateFieldNotEmpty,
+  ValidateName,
+  ValidateZipCode,
+  onInputNumber,
+} from "../Validation.js";
 import eyeSlash from "../../assets/eye-password-hide-svgrepo-com.svg";
 import eyeOpen from "../../assets/eye-password-show-svgrepo-com.svg";
 
@@ -33,34 +40,31 @@ class LoginSignUpPage extends React.Component {
     this.setState({ status: !this.state.status });
   };
 
-  ValidatePasswordMatch(fieldName1, fieldName2, errorProperty) {
-    const value1 = document.getElementById(fieldName1).value;
-    const value2 = document.getElementById(fieldName2).value;
-    if (value1.length === 0 || value2.length === 0) {
+  ValidatePasswordMatch(errorProperty) {
+    if (this.state.password.length === 0 || this.state.confirm.length === 0) {
       this.setState({ [errorProperty]: false });
       return 0;
     }
-    if (value1 !== value2) {
+    if (this.state.password !== this.state.confirm) {
       this.setState({ [errorProperty]: true });
       return 1;
     }
     this.setState({ [errorProperty]: false });
     return 0;
   }
-  
-  ValidatePassword (fieldName, errorProperty) {
-    const password = document.getElementById(fieldName).value;
-    if (!password) {
+
+  ValidatePassword(errorProperty) {
+    if (!this.state.password) {
       this.setState({ [errorProperty]: false });
       return 0;
     }
     if (
-      password.length < 8 ||
-      password.length > 20 ||
-      password.match("/[A-Z]/") != null ||
-      password.match("/[a-z]/") != null ||
-      password.match("/[0-9]/") != null ||
-      password.match("/[!|@|#|$|%|^|(|)|_|+]/") != null
+      this.state.password.length < 8 ||
+      this.state.password.length > 20 ||
+      this.state.password.match("/[A-Z]/") != null ||
+      this.state.password.match("/[a-z]/") != null ||
+      this.state.password.match("/[0-9]/") != null ||
+      this.state.password.match("/[!|@|#|$|%|^|(|)|_|+]/") != null
     ) {
       this.setState({ [errorProperty]: true });
       return 1;
@@ -70,41 +74,40 @@ class LoginSignUpPage extends React.Component {
   }
 
   ValidateFieldNotEmpty(field, errorProperty) {
-    const status = ValidateFieldNotEmpty(field);
-    this.setState({ [errorProperty]: ! status });
-    return (status) ? 0 : 1;
+    const status = ValidateFieldNotEmpty(this.state[field]);
+    this.setState({ [errorProperty]: !status });
+    return status ? 0 : 1;
   }
 
   ValidateName(field, errorProperty) {
-    const status = ValidateName(field);
-    this.setState({ [errorProperty]: ! status });
-    return (status) ? 0 : 1;
+    const status = ValidateName(this.state[field]);
+    this.setState({ [errorProperty]: !status });
+    return status ? 0 : 1;
   }
 
   ValidateZipCode(field, errorProperty) {
-    const status = ValidateZipCode(field);
-    this.setState({ [errorProperty]: ! status });
-    return (status) ? 0 : 1;
+    const status = ValidateZipCode(this.state[field]);
+    this.setState({ [errorProperty]: !status });
+    return status ? 0 : 1;
   }
 
   ValidateLogin() {
     let errorCount = 0;
     errorCount += this.ValidateFieldNotEmpty("email", "errorNoEmail");
     errorCount += this.ValidateFieldNotEmpty("password", "errorNoPassword");
-    errorCount += this.ValidatePassword("password", "errorBadPassword");
+    errorCount += this.ValidatePassword("errorBadPassword");
     if (this.state.status) {
-      errorCount += this.ValidateFieldNotEmpty("confirm", "errorNoConfirmPassword");
-      errorCount += this.ValidatePasswordMatch(
-        "password",
+      errorCount += this.ValidateFieldNotEmpty(
         "confirm",
-        "errorNoMatchPassword"
+        "errorNoConfirmPassword"
       );
+      errorCount += this.ValidatePasswordMatch("errorNoMatchPassword");
       errorCount += this.ValidateFieldNotEmpty("first", "errorNoFirstName");
       errorCount += this.ValidateName("first", "errorBadFirstName");
       errorCount += this.ValidateFieldNotEmpty("last", "errorNoLastName");
       errorCount += this.ValidateName("last", "errorBadLastName");
-      errorCount += this.ValidateFieldNotEmpty("zip", "errorNoZipCode");
-      errorCount += this.ValidateZipCode("zip", "errorBadZipCode");
+      errorCount += this.ValidateFieldNotEmpty("zipCode", "errorNoZipCode");
+      errorCount += this.ValidateZipCode("zipCode", "errorBadZipCode");
     }
     this.setState({ errorCount: errorCount });
     return errorCount;
@@ -141,34 +144,9 @@ class LoginSignUpPage extends React.Component {
     );
   }
 
-  onChangeEmail(e) {
-    this.setState({ email: e.target.value });
-    this.props.loginInfo.email = e.target.value;
-  }
-
-  onChangePassword(e) {
-    this.setState({ password: e.target.value });
-    this.props.loginInfo.password = e.target.value;
-  }
-
-  onChangeConfirm(e) {
-    this.setState({ confirm: e.target.value });
-    this.props.loginInfo.confirm = e.target.value;
-  }
-
-  onChangeFirst(e) {
-    this.setState({ first: e.target.value });
-    this.props.loginInfo.first = e.target.value;
-  }
-
-  onChangeLast(e) {
-    this.setState({ last: e.target.value });
-    this.props.loginInfo.last = e.target.value;
-  }
-
-  onChangeZipCode(e) {
-    this.setState({ zipCode: e.target.value });
-    this.props.loginInfo.zipCode = e.target.value;
+  onChangeField(e, field) {
+    this.setState({ [field]: e.target.value });
+    this.props.loginInfo[field] = e.target.value;
   }
 
   render() {
@@ -206,7 +184,13 @@ class LoginSignUpPage extends React.Component {
             "errorMsgEmail",
             this.state.errorNoEmail
           )}
-          {renderInputField("text", "email", this.props.loginInfo.email, (e) => this.onChangeEmail(e), "name@mail.com")}
+          {renderInputField(
+            "text",
+            "email",
+            this.props.loginInfo.email,
+            (e) => this.onChangeField(e, "email"),
+            "name@mail.com"
+          )}
           {renderLabel(
             "password",
             this.state.status ? "Create Password" : "Password",
@@ -217,7 +201,11 @@ class LoginSignUpPage extends React.Component {
             this.state.errorBadPassword,
             "Password is invalid."
           )}
-          {this.renderPasswordField("password", this.props.loginInfo.password, (e) => this.onChangePassword(e))}
+          {this.renderPasswordField(
+            "password",
+            this.props.loginInfo.password,
+            (e) => this.onChangeField(e, "password")
+          )}
           {this.state.status ? (
             <p className="instructionText">
               Password must be 8-20 characters, including at least one capital
@@ -239,7 +227,13 @@ class LoginSignUpPage extends React.Component {
                 "Passwords do not match."
               )
             : ""}
-          {this.state.status ? this.renderPasswordField("confirm", this.props.loginInfo.confirm, (e) => this.onChangeConfirm(e)) : ""}
+          {this.state.status
+            ? this.renderPasswordField(
+                "confirm",
+                this.props.loginInfo.confirm,
+                (e) => this.onChangeField(e, "confirm")
+              )
+            : ""}
           {this.state.status
             ? renderLabel(
                 "first",
@@ -252,7 +246,14 @@ class LoginSignUpPage extends React.Component {
                 "No numbers allowed in the name."
               )
             : ""}
-          {this.state.status ? renderInputField("text", "first", this.props.loginInfo.first, (e) => this.onChangeFirst(e)) : ""}
+          {this.state.status
+            ? renderInputField(
+                "text",
+                "first",
+                this.props.loginInfo.first,
+                (e) => this.onChangeField(e, "first")
+              )
+            : ""}
           {this.state.status
             ? renderLabel(
                 "last",
@@ -265,20 +266,34 @@ class LoginSignUpPage extends React.Component {
                 "No numbers allowed in the name."
               )
             : ""}
-          {this.state.status ? renderInputField("text", "last", this.props.loginInfo.last, (e) => this.onChangeLast(e)) : ""}
+          {this.state.status
+            ? renderInputField("text", "last", this.props.loginInfo.last, (e) =>
+                this.onChangeField(e, "last")
+              )
+            : ""}
           {this.state.status
             ? renderLabel(
-                "zip",
+                "zipCode",
                 "Zip Code",
                 true,
                 "errorMsgZip",
                 this.state.errorNoZipCode,
                 "This is a required field.",
                 this.state.errorBadZipCode,
-                "No letters allowed in the zip code."
+                "Invalid zip code format."
               )
             : ""}
-          {this.state.status ? renderInputField("text", "zip", this.props.loginInfo.zipCode, (e) => this.onChangeZipCode(e)) : ""}
+          {this.state.status
+            ? renderInputField(
+                "text",
+                "zipCode",
+                this.props.loginInfo.zipCode,
+                (e) => this.onChangeField(e, "zipCode"),
+                "",
+                5,
+                (e) => onInputNumber(e)
+              )
+            : ""}
           <br />
           {this.state.status ? (
             <span onClick={this.onClickSave} className="buttonSave">

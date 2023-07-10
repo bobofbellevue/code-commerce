@@ -97,36 +97,46 @@ export function renderProgressBar(stage) {
   return (
     <div className="progressBar">
       {renderStageIcon("Cart", "darkImage", "check-mark-svgrepo-com.svg")}
-      {stage >= 2 ?
+      {stage >= 2 ? (
         <span className="darkLine"></span>
-      :
+      ) : (
         <span className="lightLine"></span>
-      }
-      {stage >= 2 ?
-        renderStageIcon("Delivery", "darkImage", "delivery-van-svgrepo-com.svg")
-      :
-        renderStageIcon("Delivery", "lightImage", "delivery-van-svgrepo-com.svg")
-      }
+      )}
+      {stage >= 2
+        ? renderStageIcon(
+            "Delivery",
+            "darkImage",
+            "delivery-van-svgrepo-com.svg"
+          )
+        : renderStageIcon(
+            "Delivery",
+            "lightImage",
+            "delivery-van-svgrepo-com.svg"
+          )}
       {stage >= 3 ? (
         <span className="darkLine"></span>
       ) : (
         <span className="lightLine"></span>
       )}
-      {stage >= 3 ?
-        renderStageIcon("Payment", "darkImage", "credit-card-svgrepo-com.svg")
-        :
-        renderStageIcon("Payment", "lightImage", "credit-card-svgrepo-com.svg")
-      }
+      {stage >= 3
+        ? renderStageIcon("Payment", "darkImage", "credit-card-svgrepo-com.svg")
+        : renderStageIcon(
+            "Payment",
+            "lightImage",
+            "credit-card-svgrepo-com.svg"
+          )}
       {stage >= 4 ? (
         <span className="darkLine"></span>
       ) : (
         <span className="lightLine"></span>
       )}
-      {stage >= 4 ? (
-        renderStageIcon("Confirm", "darkImage", "check-mark-svgrepo-com.svg")
-      ) : (
-        renderStageIcon("Confirm", "lightImage", "check-mark-svgrepo-com.svg")
-      )}
+      {stage >= 4
+        ? renderStageIcon("Confirm", "darkImage", "check-mark-svgrepo-com.svg")
+        : renderStageIcon(
+            "Confirm",
+            "lightImage",
+            "check-mark-svgrepo-com.svg"
+          )}
     </div>
   );
 }
@@ -151,12 +161,12 @@ export function renderProduct(objProduct) {
               : objProduct.licenses + " licenses"}
           </p>
         </div>
-      </div>
-      <div className="numberRight">
-        {Number(objProduct.price * objProduct.licenses).toLocaleString(
-          "us-US",
-          { style: "currency", currency: "USD" }
-        )}
+        <div className="numberRight">
+          {Number(objProduct.price * objProduct.licenses).toLocaleString(
+            "us-US",
+            { style: "currency", currency: "USD" }
+          )}
+        </div>
       </div>
     </div>
   );

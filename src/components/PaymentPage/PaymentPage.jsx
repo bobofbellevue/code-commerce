@@ -42,13 +42,13 @@ class PaymentPage extends React.Component {
   }
 
   ValidateFieldNotEmpty(field, errorProperty) {
-    const status = ValidateFieldNotEmpty(field);
+    const status = ValidateFieldNotEmpty(this.state[field]);
     this.setState({ [errorProperty]: !status });
     return status ? 0 : 1;
   }
 
   ValidateName(field, errorProperty) {
-    const status = ValidateName(field);
+    const status = ValidateName(this.state[field]);
     this.setState({ [errorProperty]: !status });
     return status ? 0 : 1;
   }
@@ -153,253 +153,258 @@ class PaymentPage extends React.Component {
     this.props.paymentInfo.cvv = e.target.value;
   }
 
+  renderPaymentInfo() {
+    return (
+      <div className="paymentInfo">
+        <div>PAYMENT INFORMATION</div>
+        <hr className="hrWide" />
+        <br />
+        <hr className="hrWide hrLong" />
+        <form className="PaymentForm">
+          <p
+            className="errorText"
+            id="errorMsgPage"
+            hidden={this.state.errorCount === 0}
+          >
+            Please fix the errors indicated below.
+          </p>
+          {renderLabel(
+            "name",
+            "Cardholder Name",
+            true,
+            "errorNoName",
+            this.state.errorNoName,
+            "This is a required field.",
+            this.state.errorBadName,
+            "No numbers allowed in name."
+          )}
+          {renderInputField("text", "name", this.props.paymentInfo.name, (e) =>
+            this.onChangeName(e)
+          )}
+          {renderLabel(
+            "cardNo",
+            "Card Number",
+            true,
+            "errorNoCardNo",
+            this.state.errorNoCardNo,
+            "This is a required field."
+          )}
+          {renderInputField(
+            "text",
+            "cardNo",
+            this.props.paymentInfo.cardNo,
+            (e) => this.onChangeCardNo(e),
+            "",
+            19
+          )}
+          {renderLabel(
+            "month",
+            "Expiration Month",
+            true,
+            "errorNoMonth",
+            this.state.errorNoMonth,
+            "This is a required field."
+          )}
+          <select
+            className="baseField"
+            name="month"
+            id="month"
+            defaultValue={
+              this.props.paymentInfo.month
+                ? this.props.paymentInfo.month
+                : "Month"
+            }
+            onChange={(e) => this.onChangeMonth(e)}
+          >
+            <option disabled>Month</option>
+            {parse(
+              months
+                .map(
+                  (month) =>
+                    `<option value=${month.abbreviation}>${month.abbreviation}</option>`
+                )
+                .join(" ")
+            )}
+          </select>
+          {renderLabel(
+            "year",
+            "Expiration Year",
+            true,
+            "errorNoYear",
+            this.state.errorNoYear,
+            "This is a required field."
+          )}
+          <select
+            className="baseField"
+            name="year"
+            id="year"
+            defaultValue={
+              this.props.paymentInfo.year ? this.props.paymentInfo.year : "Year"
+            }
+            onChange={(e) => this.onChangeYear(e)}
+          >
+            <option disabled>Year</option>
+            {parse(
+              cardYears
+                .map(
+                  (year) => `<option value=${year.name}>${year.name}</option>`
+                )
+                .join(" ")
+            )}
+          </select>
+          {renderLabel(
+            "cvv",
+            "CVV",
+            true,
+            "errorNoCvv",
+            this.state.errorNoCvv,
+            "This is a required field."
+          )}
+          {renderInputField(
+            "text",
+            "cvv",
+            this.props.paymentInfo.cvv,
+            (e) => this.onChangeCvv(e),
+            "",
+            3,
+            (e) => this.onInputNumber(e)
+          )}
+          <br />
+          <div className="nextButton" onClick={() => this.onClickPay()}>
+            PAY&nbsp;
+            {(
+              this.state.subtotal -
+              (this.props.cartInfo.discountPct * this.state.subtotal) / 100 +
+              (this.props.shippingInfo.express || this.state.subtotal < 40
+                ? +5
+                : 0)
+            ).toLocaleString("us-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </div>
+        </form>
+        <div
+          className="backButton buttonLeft buttonBottom"
+          onClick={() => this.onClickShipping()}
+        >
+          BACK TO SHIPPING
+        </div>
+      </div>
+    );
+  }
+
+  renderPaymentSummary() {
+    return (
+      <div className="summaryPayment">
+        <div>SUMMARY</div>
+        <hr className="hrWide" />
+        <div className="greyText">
+          {this.props.products.length} products in your Cart.
+        </div>
+        <hr className="hrWide" />
+        {this.props.products.map((product) => renderProduct(product))}
+        <hr className="hrWide" />
+        <div className="totalsPayment">
+          <span className="greyText subtotalLeft">Cart Subtotal:</span>
+          <span className="greyText subtotalRight">
+            {this.state.subtotal.toLocaleString("us-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
+        </div>
+        <div className="totalsPayment">
+          <span className="greyText subtotalLeft">
+            Shipping &amp; Handling:
+          </span>
+          <span className="greyText subtotalRight">
+            {(this.props.shippingInfo.express || this.state.subtotal < 40
+              ? 5
+              : 0
+            ).toLocaleString("us-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
+        </div>
+        <div className="totalsPayment">
+          <span className="greyText subtotalLeft">Discount:</span>
+          <span className="greyText subtotalRight">
+            {(
+              (this.props.cartInfo.discountPct * this.state.subtotal) /
+              100
+            ).toLocaleString("us-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
+        </div>
+        <div className="totalsPayment">
+          <span className="greyText subtotalLeft">Cart Total:</span>
+          <span className="greyText subtotalRight">
+            {(
+              this.state.subtotal -
+              (this.props.cartInfo.discountPct * this.state.subtotal) / 100 +
+              (this.props.shippingInfo.express || this.state.subtotal < 40
+                ? 5
+                : 0)
+            ).toLocaleString("us-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
+        </div>
+        <hr className="hrWide" />
+        <div>
+          <div>SHIPPING ADDRESS</div>
+          <div className="greyText">{this.props.shippingInfo.name}</div>
+          <div className="greyText">{this.props.shippingInfo.address}</div>
+          <div className="greyText">
+            {this.props.shippingInfo.city}, {this.props.shippingInfo.state}{" "}
+            {this.props.shippingInfo.zipCode}
+          </div>
+          <div className="greyText">
+            Cell phone: ({this.props.shippingInfo.cellPhone.slice(0, 3)}){" "}
+            {this.props.shippingInfo.cellPhone.slice(3, 6)}-
+            {this.props.shippingInfo.cellPhone.slice(6, 10)}
+          </div>
+        </div>
+        <hr className="hrWide" />
+        <div>
+          <div>SHIPPING METHOD</div>
+          <span className="greyText subtotalRight">
+            {this.props.shippingInfo.express ? "EXPRESS: " : "STANDARD: "}
+          </span>
+          <span className="greyText subtotalRight">
+            Delivery in {this.props.shippingInfo.express ? "1 to 3" : "4 to 6"}{" "}
+            business days
+          </span>
+        </div>
+        <span className="nextButton" onClick={() => this.onClickPay()}>
+          PAY&nbsp;
+          {(
+            this.state.subtotal -
+            (this.props.cartInfo.discountPct * this.state.subtotal) / 100 +
+            (this.props.shippingInfo.express || this.state.subtotal < 40
+              ? +5
+              : 0)
+          ).toLocaleString("us-US", {
+            style: "currency",
+            currency: "USD",
+          })}
+        </span>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="page">
         {renderProgressBar(3)}
         <div className="paymentPage">
-          <div className="paymentInfo">
-            <div>PAYMENT INFORMATION</div>
-            <hr className="hrWide" />
-            <br />
-            <hr className="hrWide hrLong" />
-            <form className="PaymentForm">
-              <p
-                className="errorText"
-                id="errorMsgPage"
-                hidden={this.state.errorCount === 0}
-              >
-                Please fix the errors indicated below.
-              </p>
-              {renderLabel(
-                "name",
-                "Cardholder Name",
-                true,
-                "errorNoName",
-                this.state.errorNoName,
-                "This is a required field.",
-                this.state.errorBadName,
-                "No numbers allowed in name."
-              )}
-              {renderInputField(
-                "text",
-                "name",
-                this.props.paymentInfo.name,
-                (e) => this.onChangeName(e)
-              )}
-              {renderLabel(
-                "cardNo",
-                "Card Number",
-                true,
-                "errorNoCardNo",
-                this.state.errorNoCardNo,
-                "This is a required field."
-              )}
-              {renderInputField(
-                "text",
-                "cardNo",
-                this.props.paymentInfo.cardNo,
-                (e) => this.onChangeCardNo(e),
-                "",
-                19
-              )}
-              {renderLabel(
-                "month",
-                "Expiration Month",
-                true,
-                "errorNoMonth",
-                this.state.errorNoMonth,
-                "This is a required field."
-              )}
-              <select
-                className="baseField"
-                name="month"
-                id="month"
-                defaultValue={
-                  this.props.paymentInfo.month
-                    ? this.props.paymentInfo.month
-                    : "Month"
-                }
-                onChange={(e) => this.onChangeMonth(e)}
-              >
-                <option disabled>Month</option>
-                {parse(
-                  months
-                    .map(
-                      (month) =>
-                        `<option value=${month.abbreviation}>${month.abbreviation}</option>`
-                    )
-                    .join(" ")
-                )}
-              </select>
-              {renderLabel(
-                "year",
-                "Expiration Year",
-                true,
-                "errorNoYear",
-                this.state.errorNoYear,
-                "This is a required field."
-              )}
-              <select
-                className="baseField"
-                name="year"
-                id="year"
-                defaultValue={
-                  this.props.paymentInfo.year
-                    ? this.props.paymentInfo.year
-                    : "Year"
-                }
-                onChange={(e) => this.onChangeYear(e)}
-              >
-                <option disabled>Year</option>
-                {parse(
-                  cardYears
-                    .map(
-                      (year) =>
-                        `<option value=${year.name}>${year.name}</option>`
-                    )
-                    .join(" ")
-                )}
-              </select>
-              {renderLabel(
-                "cvv",
-                "CVV",
-                true,
-                "errorNoCvv",
-                this.state.errorNoCvv,
-                "This is a required field."
-              )}
-              {renderInputField(
-                "text",
-                "cvv",
-                this.props.paymentInfo.cvv,
-                (e) => this.onChangeCvv(e),
-                "",
-                3,
-                (e) => this.onInputNumber(e)
-              )}
-              <br />
-              <div className="nextButton" onClick={() => this.onClickPay()}>
-                PAY&nbsp;
-                {(this.state.subtotal -
-                  (this.props.cartInfo.discountPct * this.state.subtotal) /
-                    100 +
-                  ((this.props.shippingInfo.express || this.state.subtotal < 40)
-                  ? +5
-                  : 0)
-                ).toLocaleString("us-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              </div>
-            </form>
-            <div
-              className="backButton buttonLeft buttonBottom"
-              onClick={() => this.onClickShipping()}
-            >
-              BACK TO SHIPPING
-            </div>
-          </div>
-          <div className="summaryPayment">
-            <div>SUMMARY</div>
-            <hr className="hrWide" />
-            <div className="greyText">
-              {this.props.products.length} products in your Cart.
-            </div>
-            <hr className="hrWide" />
-            {this.props.products.map((product) => renderProduct(product))}
-            <hr className="hrWide" />
-            <div className="totalsPayment">
-              <span className="greyText subtotalLeft">Cart Subtotal:</span>
-              <span className="greyText subtotalRight">
-                {this.state.subtotal.toLocaleString("us-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              </span>
-            </div>
-            <div className="totalsPayment">
-              <span className="greyText subtotalLeft">
-                Shipping &amp; Handling:
-              </span>
-              <span className="greyText subtotalRight">
-                {(this.props.shippingInfo.express || this.state.subtotal < 40
-                  ? 5
-                  : 0
-                ).toLocaleString("us-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              </span>
-            </div>
-            <div className="totalsPayment">
-              <span className="greyText subtotalLeft">Discount:</span>
-              <span className="greyText subtotalRight">
-                {(
-                  (this.props.cartInfo.discountPct * this.state.subtotal) /
-                  100
-                ).toLocaleString("us-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              </span>
-            </div>
-            <div className="totalsPayment">
-              <span className="greyText subtotalLeft">Cart Total:</span>
-              <span className="greyText subtotalRight">
-                {(
-                  this.state.subtotal -
-                  (this.props.cartInfo.discountPct * this.state.subtotal) /
-                    100 +
-                  (this.props.shippingInfo.express || this.state.subtotal < 40
-                    ? 5
-                    : 0)
-                ).toLocaleString("us-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
-              </span>
-            </div>
-            <hr className="hrWide" />
-            <div>
-              <div>SHIPPING ADDRESS</div>
-              <div className="greyText">{this.props.shippingInfo.name}</div>
-              <div className="greyText">{this.props.shippingInfo.address}</div>
-              <div className="greyText">
-                {this.props.shippingInfo.city}, {this.props.shippingInfo.state}{" "}
-                {this.props.shippingInfo.zipCode}
-              </div>
-              <div className="greyText">
-                Cell phone: ({this.props.shippingInfo.cellPhone.slice(0, 3)}){" "}
-                {this.props.shippingInfo.cellPhone.slice(3, 6)}-
-                {this.props.shippingInfo.cellPhone.slice(6, 10)}
-              </div>
-            </div>
-            <hr className="hrWide" />
-            <div>
-              <div>SHIPPING METHOD</div>
-              <span className="greyText subtotalRight">
-                {this.props.shippingInfo.express ? "EXPRESS: " : "STANDARD: "}
-              </span>
-              <span className="greyText subtotalRight">
-                Delivery in{" "}
-                {this.props.shippingInfo.express ? "1 to 3" : "4 to 6"} business
-                days
-              </span>
-            </div>
-            <span className="nextButton" onClick={() => this.onClickPay()}>
-              PAY&nbsp;
-              {(this.state.subtotal -
-                (this.props.cartInfo.discountPct * this.state.subtotal) / 100 +
-                ((this.props.shippingInfo.express || this.state.subtotal < 40)
-                ? +5
-                : 0)
-              ).toLocaleString("us-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </span>
-          </div>
+          {this.renderPaymentInfo()}
+          {this.renderPaymentSummary()}
         </div>
       </div>
     );

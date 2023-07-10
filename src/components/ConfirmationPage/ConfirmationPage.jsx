@@ -33,7 +33,8 @@ class ConfirmationPage extends React.Component {
             <br /> <br /> <br />
             <img className="checkMark" src={greenCheckMark} alt="check mark" />
             <br />
-            <span className="bigText">Congratulations!</span><br />
+            <span className="bigText">Congratulations!</span>
+            <br />
             <span className="bigText">Your order is accepted.</span>
             <br />
             <div
@@ -136,15 +137,23 @@ class ConfirmationPage extends React.Component {
             <hr className="hrWide" />
             <div>
               <div>PAYMENT INFORMATION</div>
-                <span className="greyText rightText">Name on card: </span>
-                <span className="greyText rightText">{this.props.paymentInfo.name}</span>
-                <br />
-                <span className="greyText rightText">Carding ending in: </span>
-                <span className="greyText rightText">{this.props.paymentInfo.cardNo.slice(0, 4)}</span>
-                <br />
-                <span className="greyText rightText">Card expires on: </span>
-                <span className="greyText rightText">{this.props.paymentInfo.month}/</span>
-                <span className="greyText rightText">{this.props.paymentInfo.year}</span>
+              <span className="greyText rightText">Name on card: </span>
+              <span className="greyText rightText">
+                {this.props.paymentInfo.name}
+              </span>
+              <br />
+              <span className="greyText rightText">Carding ending in: </span>
+              <span className="greyText rightText">
+                {this.props.paymentInfo.cardNo.slice(0, 4)}
+              </span>
+              <br />
+              <span className="greyText rightText">Card expires on: </span>
+              <span className="greyText rightText">
+                {this.props.paymentInfo.month}/
+              </span>
+              <span className="greyText rightText">
+                {this.props.paymentInfo.year}
+              </span>
             </div>
             <br />
           </div>
