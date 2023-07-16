@@ -1,5 +1,15 @@
 https://github.com/bobofbellevue/code-commerce.git
 
+Login with any email address and any valid password.
+
+Password example: kkk444$$$
+
 Promo codes:
 SAVE10
 SAVE5
+
+I fixed all issues you mentioned - even if not required - except that I could
+not reproduce the issue of it taking two clicks on the license count drop down
+fields to affect the total. That worked for me. Fixed in the course of other
+changes? Browser specific?
+

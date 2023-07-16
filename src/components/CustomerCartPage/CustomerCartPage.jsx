@@ -58,7 +58,7 @@ class CustomerCartPage extends React.Component {
     const index = this.props.products.findIndex(
       (product) => product.name === productName
     );
-    this.props.products[index].licenses = e.target.value;
+    this.props.products[index].licenses = Number(e.target.value);
     const subtotal = this.calcSubtotal();
     this.setState({ subtotal: subtotal, total: this.calcTotal(subtotal) });
     this.onClickDiscount();
@@ -101,7 +101,7 @@ class CustomerCartPage extends React.Component {
             name="licenses"
             id="licenses"
             defaultValue={objProduct.licenses}
-            onClick={(e) => this.onLicenseChange(e, objProduct.name)}
+            onChange={(e) => this.onLicenseChange(e, objProduct.name)}
           >
             {parse(this.createLicenseOptions(objProduct.licenses))}
           </select>
@@ -162,7 +162,7 @@ class CustomerCartPage extends React.Component {
                 <tr className="headerRow">
                   {["", "PRODUCT", "PRICE", "LICENSES", "TOTAL"].map(
                     (title) => (
-                      <th>{title}</th>
+                      <th key={title || "_blank"}>{title}</th>
                     )
                   )}
                 </tr>
